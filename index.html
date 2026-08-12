@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Johnny Tec AI - Video Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col md:flex-row">
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="w-full md:w-72 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 p-5 flex flex-col justify-between shrink-0">
+    <div>
+      <!-- Brand Header -->
+      <div class="flex items-center gap-3 mb-6">
+        <div class="p-2.5 bg-indigo-600/20 rounded-xl text-indigo-400 border border-indigo-500/30">
+          <i data-lucide="video" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white tracking-tight">Johnny Tec AI</h1>
+          <p class="text-[11px] text-slate-400">Video Studio Command</p>
+        </div>
+      </div>
+
+      <!-- Engine Selector Header -->
+      <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1 flex items-center gap-1.5">
+        <i data-lucide="cpu" class="w-3.5 h-3.5 text-indigo-400"></i> Active API Engine
+      </div>
+
+      <!-- Engine Buttons -->
+      <div id="engineList" class="flex flex-col gap-2"></div>
+    </div>
+
+    <!-- Auto Fallback Switcher -->
+    <div class="mt-6 pt-4 border-t border-slate-800">
+      <label class="flex items-center justify-between cursor-pointer p-3 rounded-xl bg-slate-950 border border-slate-800">
+        <div class="flex items-center gap-2">
+          <i data-lucide="layers" class="w-4 h-4 text-indigo-400"></i>
+          <span class="text-xs text-slate-300 font-medium">Auto Fallback</span>
+        </div>
+        <input type="checkbox" id="autoFallback" checked class="rounded bg-slate-900 border-slate-800 text-indigo-600 w-4 h-4" />
+      </label>
+      <p class="text-[10px] text-slate-500 mt-2 px-1">Tries next API automatically if selected one fails or reaches rate limit.</p>
+    </div>
+  </aside>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 p-4 sm:p-8 max-w-4xl mx-auto w-full">
+    <header class="mb-6 flex items-center justify-between pb-4 border-b border-slate-800">
+      <div>
+        <h2 class="text-xl font-bold tracking-tight">Generate AI Video</h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Active Engine: <span id="activeEngineBadge" class="text-indigo-400 font-semibold uppercase">FAL.AI</span>
+        </p>
+      </div>
+      <span class="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/50 border border-emerald-800/50 px-2.5 py-1 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Render Cluster Online
+      </span>
+    </header>
+
+    <!-- FORM WORKSPACE -->
+    <form id="videoForm" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col gap-5 shadow-2xl">
+      
+      <!-- Aspect Ratio & Resolution -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Aspect Ratio</label>
+          <select id="aspectRatio" class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500">
+            <option value="16:9">16:9 (Landscape)</option>
+            <option value="9:16">9:16 (Portrait / Reels)</option>
+            <option value="1:1">1:1 (Square)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Resolution</label>
+          <select id="resolution" class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500">
+            <option value="720p">720p (Fast)</option>
+            <option value="1080p">1080p (HD)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Source Image Upload -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
+          Source Photo <span class="text-slate-600 font-normal lowercase">(Optional for Image-to-Video)</span>
+        </label>
+        <input type="file" id="imageInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-900 file:text-indigo-200 hover:file:bg-indigo-800" />
+      </div>
+
+      <!-- Prompt Input -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Video Prompt</label>
+        <textarea id="prompt" rows="3" required placeholder="Describe motion (e.g. Futuristic cybernetic city under heavy rain, 4k cinematic...)" class="w-full p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-indigo-500 resize-none"></textarea>
+        
+        <!-- Preset Ideas -->
+        <div class="mt-3 flex flex-wrap gap-1.5">
+          <button type="button" onclick="setPreset('Cinematic wide shot of a rainy neon cyber city, 4k resolution')" class="text-[10px] bg-slate-950 border border-slate-800 hover:bg-slate-800 text-slate-400 px-2 py-1 rounded-lg">Cyberpunk City</button>
+          <button type="button" onclick="setPreset('Slow motion camera zooming into an ancient magical forest portal')" class="text-[10px] bg-slate-950 border border-slate-800 hover:bg-slate-800 text-slate-400 px-2 py-1 rounded-lg">Magic Portal</button>
+          <button type="button" onclick="setPreset('Underwater view of bioluminescent alien reef with glowing fish')" class="text-[10px] bg-slate-950 border border-slate-800 hover:bg-slate-800 text-slate-400 px-2 py-1 rounded-lg">Underwater</button>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm rounded-xl flex items-center justify-center gap-2 transition shadow-lg shadow-indigo-600/20">
+        <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+        <span>Generate Video</span>
+      </button>
+    </form>
+
+    <!-- STATUS TEXT -->
+    <p id="status" class="text-center text-xs text-indigo-400 mt-4 hidden animate-pulse"></p>
+
+    <!-- OUTPUT VIDEO CONTAINER -->
+    <div id="resultContainer" class="mt-8 bg-slate-900 border border-slate-800 p-4 rounded-2xl hidden shadow-xl flex flex-col gap-3">
+      <h3 class="text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
+        <i data-lucide="check-circle" class="w-4 h-4"></i> Video Generation Complete
+      </h3>
+      <video id="videoOutput" controls autoplay loop class="w-full rounded-xl bg-black border border-slate-800"></video>
+      <div class="flex items-center justify-between text-xs px-1">
+        <a id="directUrl" href="#" target="_blank" class="text-indigo-400 hover:underline">Open Direct Video</a>
+        <a id="downloadUrl" href="#" download class="text-slate-400 hover:text-white">Download MP4</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const BACKEND_URL = "https://ai-video-forge-backend.onrender.com/api/generate-video";
+    
+    const PROVIDERS = [
+      { id: "fal", name: "fal.ai", desc: "Hunyuan / Minimax", badge: "Fast" },
+      { id: "replicate", name: "Replicate", desc: "Stable Video Diff", badge: "Open Source" },
+      { id: "google", name: "Google Veo", desc: "High cinematic quality", badge: "Pro" },
+      { id: "leonardo", name: "Leonardo.ai", desc: "Motion & visual styles", badge: "Creative" },
+      { id: "json2video", name: "JSON2Video", desc: "Captions & templates", badge: "Utility" }
+    ];
+
+    let activeProvider = "fal";
+
+    const engineList = document.getElementById("engineList");
+
+    function renderEngines() {
+      engineList.innerHTML = PROVIDERS.map(p => `
+        <button type="button" onclick="selectEngine('${p.id}')" class="w-full text-left p-3 rounded-xl transition flex flex-col gap-1 border ${activeProvider === p.id ? 'bg-indigo-600/20 border-indigo-500 text-white' : 'bg-slate-950/60 border-slate-800/80 text-slate-400 hover:border-slate-700'}">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold">${p.name}</span>
+            <span class="text-[9px] px-2 py-0.5 rounded-full font-mono ${activeProvider === p.id ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'}">${p.badge}</span>
+          </div>
+          <p class="text-[10px] text-slate-500">${p.desc}</p>
+        </button>
+      `).join('');
+      document.getElementById("activeEngineBadge").innerText = activeProvider;
+    }
+
+    function selectEngine(id) {
+      activeProvider = id;
+      renderEngines();
+    }
+
+    function setPreset(text) {
+      document.getElementById('prompt').value = text;
+    }
+
+    renderEngines();
+
+    // Form Handler
+    const form = document.getElementById('videoForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusText = document.getElementById('status');
+    const resultContainer = document.getElementById('resultContainer');
+    const videoOutput = document.getElementById('videoOutput');
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const prompt = document.getElementById('prompt').value;
+      const aspectRatio = document.getElementById('aspectRatio').value;
+      const resolution = document.getElementById('resolution').value;
+      const imageFile = document.getElementById('imageInput').files[0];
+      const autoFallback = document.getElementById('autoFallback').checked;
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Processing Render...";
+      statusText.classList.remove('hidden');
+      statusText.innerText = "Connecting to Render cluster (30–60s)...";
+      resultContainer.classList.add('hidden');
+
+      try {
+        let imageUrl = null;
+        if (imageFile) {
+          imageUrl = await fileToBase64(imageFile);
+        }
+
+        const res = await fetch(BACKEND_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, provider: activeProvider, autoFallback, imageUrl, aspectRatio, resolution })
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || "Generation failed.");
+
+        videoOutput.src = data.videoUrl;
+        document.getElementById('directUrl').href = data.videoUrl;
+        document.getElementById('downloadUrl').href = data.videoUrl;
+        resultContainer.classList.remove('hidden');
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4 fill-current"></i><span>Generate Video</span>';
+        statusText.classList.add('hidden');
+        lucide.createIcons();
+      }
+    });
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+              
