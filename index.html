@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Johnny Tec AI - Omnichannel Video Cluster</title>
+  <title>Johnny Tec AI - Omnichannel Video Studio</title>
   <style>
     :root {
       --bg-color: #070913;
-      --card-bg: rgba(18, 22, 41, 0.75);
-      --border-color: rgba(0, 229, 255, 0.2);
+      --card-bg: rgba(18, 22, 41, 0.85);
+      --border-color: rgba(0, 229, 255, 0.25);
       --neon-cyan: #00e5ff;
       --neon-purple: #9d4edd;
       --neon-green: #00ff87;
@@ -17,269 +17,74 @@
       --text-muted: #94a3b8;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; padding: 15px; overflow-x: hidden; }
 
-    body {
-      background-color: var(--bg-color);
-      background-image: 
-        radial-gradient(circle at 10% 10%, rgba(157, 78, 221, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 90% 90%, rgba(0, 229, 255, 0.15) 0%, transparent 40%);
-      color: var(--text-main);
-      min-height: 100vh;
-      padding: 15px;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    .container { max-width: 1200px; margin: 0 auto; }
 
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      backdrop-filter: blur(10px);
-      margin-bottom: 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 20px; background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 14px; backdrop-filter: blur(10px); margin-bottom: 20px;
     }
 
     .logo {
-      font-size: 1.3rem;
-      font-weight: 800;
+      font-size: 1.3rem; font-weight: 800;
       background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 1px;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.85rem;
-      padding: 6px 12px;
-      border-radius: 20px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-color);
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--neon-red);
-      box-shadow: 0 0 8px var(--neon-red);
-    }
-
-    .dot.online {
-      background: var(--neon-green);
-      box-shadow: 0 0 8px var(--neon-green);
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-
-    @media (min-width: 900px) {
-      .dashboard-grid {
-        grid-template-columns: 360px 1fr;
-      }
-    }
+    .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    @media (min-width: 900px) { .dashboard-grid { grid-template-columns: 360px 1fr; } }
 
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 14px; padding: 20px; backdrop-filter: blur(10px); margin-bottom: 20px;
     }
 
-    .card-title {
-      font-size: 1.1rem;
-      color: var(--neon-cyan);
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .card-title { font-size: 1.1rem; color: var(--neon-cyan); margin-bottom: 15px; display: flex; justify-content: space-between; }
 
-    /* Token Statistics Panel */
-    .token-display {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
+    /* API Metrics Table */
+    .metric-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+    .metric-val { font-weight: bold; color: var(--neon-cyan); }
 
-    .stat-box {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      text-align: center;
-    }
-
-    .stat-val {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--neon-cyan);
-    }
-
-    .stat-lbl {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .timer-bar {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      background: rgba(0, 0, 0, 0.2);
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .btn-reset {
-      background: transparent;
-      border: 1px solid var(--neon-purple);
-      color: var(--neon-purple);
-    }
-
-    .btn-reset:hover {
-      background: var(--neon-purple);
-      color: #fff;
-      box-shadow: 0 0 15px var(--neon-purple);
-    }
-
-    .btn-generate {
-      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
-      color: #000;
-      font-weight: 800;
-      margin-top: 15px;
-    }
-
-    .btn-generate:hover {
-      opacity: 0.9;
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
-    }
-
-    /* API Provider Selector */
-    .provider-selector {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
+    /* Engine Selector Chips */
+    .provider-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; margin-bottom: 15px; }
     .provider-chip {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-color);
-      padding: 10px 8px;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: 0.2s;
+      background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color);
+      padding: 10px 8px; border-radius: 8px; text-align: center; cursor: pointer; font-size: 0.8rem;
     }
+    .provider-chip.active { border-color: var(--neon-cyan); background: rgba(0, 229, 255, 0.15); box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
 
-    .provider-chip.active {
-      border-color: var(--neon-cyan);
-      background: rgba(0, 229, 255, 0.15);
-      box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    /* Buttons */
+    .btn {
+      width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700;
+      cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px;
     }
+    .btn-gen { background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple)); color: #000; }
+    .btn-action { background: rgba(0, 229, 255, 0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); font-size: 0.8rem; padding: 8px; }
+    .btn-action:hover { background: var(--neon-cyan); color: #000; }
 
-    .provider-chip .api-status {
-      font-size: 0.65rem;
-      display: block;
-      margin-top: 4px;
-      color: var(--text-muted);
+    /* Stage Area */
+    .preview-stage {
+      width: 100%; height: 320px; background: #000; border: 1px dashed var(--border-color);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;
     }
+    video { width: 100%; height: 100%; object-fit: cover; }
 
-    /* Form Fields */
-    label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      display: block;
-      margin: 10px 0 5px;
+    /* Slide-out Sidebar Studio */
+    .sidebar-studio {
+      position: fixed; top: 0; right: -420px; width: 400px; height: 100vh;
+      background: rgba(10, 13, 26, 0.95); border-left: 1px solid var(--neon-purple);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.8); backdrop-filter: blur(15px);
+      transition: right 0.4s ease; z-index: 999; padding: 25px; overflow-y: auto;
     }
+    .sidebar-studio.open { right: 0; }
+    .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; color: var(--neon-red); font-weight: bold; }
 
     input, textarea {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 10px;
-      color: var(--text-main);
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    /* Video Display Stage */
-    .preview-stage {
-      width: 100%;
-      height: 380px;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px dashed var(--border-color);
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .loader {
-      display: none;
-      border: 4px solid rgba(255, 255, 255, 0.1);
-      border-left-color: var(--neon-cyan);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 10px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      width: 100%; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 10px; color: var(--text-main); margin: 6px 0 12px; outline: none;
     }
   </style>
 </head>
@@ -287,268 +92,255 @@
 
 <div class="container">
   <header>
-    <div class="logo">JOHNNY TEC // AI CLUSTER</div>
-    <div class="status-badge">
-      <div id="backend-dot" class="dot"></div>
-      <span id="backend-status-text">Checking Cluster...</span>
-    </div>
+    <div class="logo">JOHNNY TEC // AI OMNICHANNEL STUDIO</div>
+    <button class="btn btn-action" style="width: auto;" onclick="toggleStudio()">Open JSON2Video Studio 🎬</button>
   </header>
 
   <div class="dashboard-grid">
-    
-    <!-- LEFT SIDEBAR: API Quota & Config -->
-    <div class="sidebar">
-      <!-- Token Tracker Card -->
-      <div class="card" style="margin-bottom: 20px;">
-        <div class="card-title">
-          <span>TOKEN METRICS</span>
-          <span id="active-api-tag" style="font-size: 0.75rem; color: var(--neon-purple);">FAL.AI</span>
-        </div>
-
-        <div class="token-display">
-          <div class="stat-box">
-            <div id="tokens-remaining" class="stat-val">100</div>
-            <div class="stat-lbl">REMAINING</div>
-          </div>
-          <div class="stat-box">
-            <div id="tokens-total" class="stat-val">100</div>
-            <div class="stat-lbl">TOTAL ALLOCATED</div>
-          </div>
-        </div>
-
-        <div class="timer-bar">
-          <span>Quota Reset In:</span>
-          <span id="reset-timer" style="color: var(--neon-cyan);">23:59:59</span>
-        </div>
-
-        <button class="btn btn-reset" onclick="resetTokens()">Reset Token Allocation</button>
-      </div>
-
-      <!-- API Engine Selector Card -->
+    <!-- LEFT SIDEBAR: API ISOLATED METRICS -->
+    <div>
       <div class="card">
-        <div class="card-title">ENGINE SWITCHER</div>
+        <div class="card-title">ENGINE METRICS <span id="active-tag">FAL</span></div>
         
-        <div class="provider-selector">
-          <div class="provider-chip active" onclick="selectProvider('fal', 100, this)">
-            FAL.AI
-            <span class="api-status" id="status-fal">Checking...</span>
-          </div>
-          <div class="provider-chip" onclick="selectProvider('google', 50, this)">
-            Google Veo
-            <span class="api-status" id="status-google">Checking...</span>
-          </div>
-          <div class="provider-chip" onclick="selectProvider('replicate', 80, this)">
-            Replicate
-            <span class="api-status" id="status-replicate">Checking...</span>
-          </div>
-          <div class="provider-chip" onclick="selectProvider('leonardo', 60, this)">
-            Leonardo
-            <span class="api-status" id="status-leonardo">Checking...</span>
-          </div>
-          <div class="provider-chip" onclick="selectProvider('kling', 40, this)">
-            Kling AI
-            <span class="api-status" id="status-kling">Checking...</span>
-          </div>
+        <div class="metric-row">
+          <span>Engine Status:</span>
+          <span class="metric-val" id="metric-status">Checking...</span>
+        </div>
+        <div class="metric-row">
+          <span>Tokens Remaining:</span>
+          <span class="metric-val" id="metric-remaining">100</span>
+        </div>
+        <div class="metric-row">
+          <span>Token Cost / Video:</span>
+          <span class="metric-val" id="metric-cost">10</span>
+        </div>
+        <div class="metric-row">
+          <span>Videos Rendered:</span>
+          <span class="metric-val" id="metric-count">0</span>
         </div>
 
-        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">
-          * Switch engines to view individual token allowances and live backend connection states.
-        </div>
+        <button class="btn btn-action" style="margin-top:15px;" onclick="resetApiTokens()">Reset Engine Allocation</button>
       </div>
-    </div>
 
-    <!-- RIGHT MAIN PANEL: Generation & Player -->
-    <div class="main-content">
       <div class="card">
-        <div class="card-title">POST-PRODUCTION GENERATOR ENGINE</div>
-
-        <!-- Video Stage -->
-        <div class="preview-stage" id="stage">
-          <div class="loader" id="loader"></div>
-          <div id="stage-placeholder" style="color: var(--text-muted); font-size: 0.9rem;">
-            Generated output will render here
-          </div>
-          <video id="video-player" controls style="display: none;"></video>
+        <div class="card-title">SELECT API ENGINE</div>
+        <div class="provider-selector">
+          <div class="provider-chip active" onclick="switchApi('fal', this)">FAL.AI</div>
+          <div class="provider-chip" onclick="switchApi('google', this)">Google Veo</div>
+          <div class="provider-chip" onclick="switchApi('replicate', this)">Replicate</div>
+          <div class="provider-chip" onclick="switchApi('leonardo', this)">Leonardo</div>
+          <div class="provider-chip" onclick="switchApi('kling', this)">Kling</div>
         </div>
-
-        <!-- Prompt Controls -->
-        <label for="prompt">Video Prompt Description</label>
-        <textarea id="prompt" placeholder="A futuristic cyberpunk city in the rain with glowing neon signs..."></textarea>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <div>
-            <label for="caption">Burn-In Subtitle / Caption</label>
-            <input type="text" id="caption" placeholder="Johnny Tec AI Generated">
-          </div>
-          <div>
-            <label for="logo">Watermark Logo URL (Optional)</label>
-            <input type="text" id="logo" placeholder="https://domain.com/logo.png">
-          </div>
-        </div>
-
-        <button class="btn btn-generate" id="generate-btn" onclick="generateVideo()">
-          Generate & Post-Process MP4
-        </button>
       </div>
     </div>
 
+    <!-- MAIN GENERATION STAGE -->
+    <div>
+      <div class="card">
+        <div class="card-title">RAW VIDEO STAGE</div>
+        
+        <div class="preview-stage">
+          <div id="stage-placeholder" style="color:var(--text-muted);">No raw video generated yet</div>
+          <video id="raw-player" controls style="display:none;"></video>
+        </div>
+
+        <!-- Video Action Toolbar -->
+        <div id="action-bar" style="display:none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px;">
+          <button class="btn btn-action" onclick="copyVideoUrl()">📋 Copy URL</button>
+          <button class="btn btn-action" onclick="downloadVideo()">⬇️ Download</button>
+          <button class="btn btn-action" style="border-color:var(--neon-purple); color:var(--neon-purple);" onclick="sendToStudio()">🎬 Edit in Studio</button>
+        </div>
+
+        <label style="margin-top:15px; display:block; font-size:0.85rem;">Prompt Description</label>
+        <textarea id="prompt-input" placeholder="A futuristic drone shot over neon skyscrapers at sunset..."></textarea>
+
+        <button class="btn btn-gen" id="gen-btn" onclick="generateRawVideo()">Generate Raw Video</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE-OUT JSON2VIDEO SIDEBAR STUDIO -->
+<div class="sidebar-studio" id="studio-panel">
+  <div class="close-btn" onclick="toggleStudio()">✕ CLOSE</div>
+  <h2 style="color:var(--neon-purple); margin-bottom: 15px;">JSON2Video Studio</h2>
+
+  <label>Source Video URL</label>
+  <input type="text" id="studio-video-url" placeholder="https://...">
+
+  <label>Subtitle Caption Overlay</label>
+  <input type="text" id="studio-caption" placeholder="Cyberpunk City 2026">
+
+  <label>Watermark Logo URL</label>
+  <input type="text" id="studio-logo" placeholder="https://domain.com/logo.png">
+
+  <label>Text-To-Speech Voiceover</label>
+  <input type="text" id="studio-voice" placeholder="Welcome to the future of AI.">
+
+  <label>Background Music MP3 URL</label>
+  <input type="text" id="studio-music" placeholder="https://domain.com/music.mp3">
+
+  <button class="btn btn-gen" style="background:var(--neon-purple); color:#fff;" onclick="renderInStudio()">Render Final MP4</button>
+
+  <div id="studio-result" style="margin-top:20px; display:none;">
+    <h4 style="color:var(--neon-green); margin-bottom:10px;">Post-Production Complete!</h4>
+    <video id="studio-player" controls style="width:100%; border-radius:8px;"></video>
   </div>
 </div>
 
 <script>
-  // BACKEND URL (Will target Render when hosted)
-  const BACKEND_URL = "https://johnny-ai-video-backend.onrender.com";
-  // TOKEN SYSTEM STATE ENGINE
-  const tokenState = {
-    fal: { total: 100, remaining: 100, cost: 10 },
-    google: { total: 50, remaining: 50, cost: 5 },
-    replicate: { total: 80, remaining: 80, cost: 8 },
-    leonardo: { total: 60, remaining: 60, cost: 6 },
-    kling: { total: 40, remaining: 40, cost: 10 }
+  const BACKEND_URL = "http://localhost:10000";
+
+  // Isolated API metrics state
+  const apiState = {
+    fal: { remaining: 400, total: 400, cost: 10, count: 0 },
+    google: { remaining: 50, total: 50, cost: 15, count: 0 },
+    replicate: { remaining: 80, total: 80, cost: 8, count: 0 },
+    leonardo: { remaining: 60, total: 60, cost: 12, count: 0 },
+    kling: { remaining: 40, total: 40, cost: 20, count: 0 }
   };
 
-  let currentProvider = 'fal';
-  let resetCountdownSeconds = 86400; // 24 Hours
+  let activeApi = 'fal';
+  let currentRawUrl = "";
 
-  // Initialize UI & Backend Health Monitoring
   window.onload = () => {
-    updateTokenDisplay();
-    startResetTimer();
-    checkBackendHealth();
+    updateMetricsView();
+    fetchBackendMetrics();
   };
 
-  // 1. Backend Health Check & API Status Monitor
-  async function checkBackendHealth() {
-    const dot = document.getElementById('backend-dot');
-    const text = document.getElementById('backend-status-text');
+  // Switch API Engine
+  function switchApi(api, el) {
+    activeApi = api;
+    document.querySelectorAll('.provider-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('active-tag').innerText = api.toUpperCase();
+    updateMetricsView();
+  }
 
+  // Update UI Stats
+  function updateMetricsView() {
+    const data = apiState[activeApi];
+    document.getElementById('metric-remaining').innerText = data.remaining;
+    document.getElementById('metric-cost').innerText = data.cost;
+    document.getElementById('metric-count').innerText = data.count;
+  }
+
+  // Fetch backend connection status
+  async function fetchBackendMetrics() {
     try {
-      const res = await fetch(`${BACKEND_URL}/`);
-      if (res.ok) {
-        dot.classList.add('online');
-        text.innerText = "Backend Active";
-        
-        // Mark provider chips as ready
-        ['fal', 'google', 'replicate', 'leonardo', 'kling'].forEach(p => {
-          const el = document.getElementById(`status-${p}`);
-          if (el) {
-            el.innerText = "Online";
-            el.style.color = "var(--neon-green)";
-          }
-        });
-      } else {
-        throw new Error();
+      const res = await fetch(`${BACKEND_URL}/api/metrics`);
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('metric-status').innerText = "Online";
+        document.getElementById('metric-status').style.color = "var(--neon-green)";
+        if (data.metrics.fal.liveCredits) {
+          apiState.fal.remaining = Math.round(data.metrics.fal.liveCredits);
+          updateMetricsView();
+        }
       }
     } catch (e) {
-      dot.classList.remove('online');
-      text.innerText = "Cluster Disconnected";
-      ['fal', 'google', 'replicate', 'leonardo', 'kling'].forEach(p => {
-        const el = document.getElementById(`status-${p}`);
-        if (el) {
-          el.innerText = "Offline";
-          el.style.color = "var(--neon-red)";
-        }
-      });
+      document.getElementById('metric-status').innerText = "Offline";
+      document.getElementById('metric-status').style.color = "var(--neon-red)";
     }
   }
 
-  // 2. Provider Selector Handler
-  function selectProvider(provider, total, element) {
-    currentProvider = provider;
-    
-    document.querySelectorAll('.provider-chip').forEach(c => c.classList.remove('active'));
-    element.classList.add('active');
+  // Generate Raw Video
+  async function generateRawVideo() {
+    const prompt = document.getElementById('prompt-input').value;
+    const data = apiState[activeApi];
 
-    document.getElementById('active-api-tag').innerText = provider.toUpperCase();
-    updateTokenDisplay();
-  }
+    if (!prompt) return alert("Please enter a prompt.");
+    if (data.remaining < data.cost) return alert("Insufficient tokens for this API engine!");
 
-  // 3. Update Token Metrics
-  function updateTokenDisplay() {
-    const data = tokenState[currentProvider];
-    document.getElementById('tokens-remaining').innerText = data.remaining;
-    document.getElementById('tokens-total').innerText = data.total;
-  }
+    data.remaining -= data.cost;
+    data.count += 1;
+    updateMetricsView();
 
-  // 4. Reset Token Quota
-  function resetTokens() {
-    tokenState[currentProvider].remaining = tokenState[currentProvider].total;
-    updateTokenDisplay();
-    alert(`Tokens for ${currentProvider.toUpperCase()} have been successfully reset!`);
-  }
-
-  // 5. Quota Reset Countdown Timer
-  function startResetTimer() {
-    setInterval(() => {
-      if (resetCountdownSeconds > 0) resetCountdownSeconds--;
-      const hours = String(Math.floor(resetCountdownSeconds / 3600)).padStart(2, '0');
-      const mins = String(Math.floor((resetCountdownSeconds % 3600) / 60)).padStart(2, '0');
-      const secs = String(resetCountdownSeconds % 60).padStart(2, '0');
-      document.getElementById('reset-timer').innerText = `${hours}:${mins}:${secs}`;
-    }, 1000);
-  }
-
-  // 6. Execute Video Generation API Call
-  async function generateVideo() {
-    const prompt = document.getElementById('prompt').value;
-    const captionText = document.getElementById('caption').value;
-    const logoUrl = document.getElementById('logo').value;
-    const providerData = tokenState[currentProvider];
-
-    if (!prompt) {
-      alert("Please enter a video prompt description.");
-      return;
-    }
-
-    if (providerData.remaining < providerData.cost) {
-      alert(`Insufficient tokens! This engine requires ${providerData.cost} tokens, but you only have ${providerData.remaining} left.`);
-      return;
-    }
-
-    // Deduct Tokens
-    providerData.remaining -= providerData.cost;
-    updateTokenDisplay();
-
-    // UI Loading State
-    document.getElementById('stage-placeholder').style.display = 'none';
-    document.getElementById('video-player').style.display = 'none';
-    document.getElementById('loader').style.display = 'block';
-    document.getElementById('generate-btn').disabled = true;
+    document.getElementById('stage-placeholder').innerText = "Rendering raw video via " + activeApi.toUpperCase() + "...";
+    document.getElementById('raw-player').style.display = 'none';
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/generate-video`, {
+      const res = await fetch(`${BACKEND_URL}/api/generate-raw`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: prompt,
-          provider: currentProvider,
-          autoFallback: true,
-          captionText: captionText,
-          logoUrl: logoUrl
-        })
+        body: JSON.stringify({ prompt, provider: activeApi })
       });
+      const result = await res.json();
 
-      const result = await response.json();
-
-      if (result.success && result.finalVideoUrl) {
-        const videoPlayer = document.getElementById('video-player');
-        videoPlayer.src = result.finalVideoUrl;
-        videoPlayer.style.display = 'block';
-        videoPlayer.play();
+      if (result.success) {
+        currentRawUrl = result.rawVideoUrl;
+        const player = document.getElementById('raw-player');
+        player.src = currentRawUrl;
+        player.style.display = 'block';
+        document.getElementById('stage-placeholder').style.display = 'none';
+        document.getElementById('action-bar').style.display = 'grid';
+        player.play();
       } else {
-        alert(`Generation Error: ${result.error || 'Failed to render video.'}`);
-        document.getElementById('stage-placeholder').style.display = 'block';
+        alert("Error: " + result.error);
+        document.getElementById('stage-placeholder').innerText = "Generation failed.";
       }
-    } catch (err) {
-      alert("Error connecting to cluster server.");
-      document.getElementById('stage-placeholder').style.display = 'block';
-    } finally {
-      document.getElementById('loader').style.display = 'none';
-      document.getElementById('generate-btn').disabled = false;
+    } catch (e) {
+      alert("Failed to connect to backend server.");
     }
+  }
+
+  // Action Tools
+  function copyVideoUrl() {
+    navigator.clipboard.writeText(currentRawUrl);
+    alert("Video URL copied to clipboard!");
+  }
+
+  function downloadVideo() {
+    window.open(currentRawUrl, '_blank');
+  }
+
+  function sendToStudio() {
+    document.getElementById('studio-video-url').value = currentRawUrl;
+    toggleStudio(true);
+  }
+
+  function toggleStudio(forceOpen = false) {
+    const panel = document.getElementById('studio-panel');
+    if (forceOpen) panel.classList.add('open');
+    else panel.classList.toggle('open');
+  }
+
+  // Render via JSON2Video Studio Sidebar
+  async function renderInStudio() {
+    const videoUrl = document.getElementById('studio-video-url').value;
+    const captionText = document.getElementById('studio-caption').value;
+    const logoUrl = document.getElementById('studio-logo').value;
+    const voiceoverText = document.getElementById('studio-voice').value;
+    const musicUrl = document.getElementById('studio-music').value;
+
+    if (!videoUrl) return alert("Please provide a video URL.");
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/json2video-render`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rawVideoUrl: videoUrl, captionText, logoUrl, voiceoverText, musicUrl })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        const studioPlayer = document.getElementById('studio-player');
+        studioPlayer.src = data.finalVideoUrl;
+        document.getElementById('studio-result').style.display = 'block';
+        studioPlayer.play();
+      } else {
+        alert("JSON2Video Error: " + data.error);
+      }
+    } catch (e) {
+      alert("Failed to reach JSON2Video editor service.");
+    }
+  }
+
+  function resetApiTokens() {
+    apiState[activeApi].remaining = apiState[activeApi].total;
+    updateMetricsView();
   }
 </script>
 
 </body>
 </html>
-          
