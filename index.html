@@ -1,385 +1,555 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Johnny Tec AI - Video Studio</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            neonCyan: '#00f3ff',
-            neonMagenta: '#ff00ff',
-            neonPurple: '#bc13fe',
-          },
-          boxShadow: {
-            'neon-cyan': '0 0 10px rgba(0, 243, 255, 0.5), 0 0 20px rgba(0, 243, 255, 0.3)',
-            'neon-purple': '0 0 15px rgba(188, 19, 254, 0.4)',
-            'neon-magenta': '0 0 15px rgba(255, 0, 255, 0.4)',
-          }
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Johnny Tec AI - Omnichannel Video Cluster</title>
+  <style>
+    :root {
+      --bg-color: #070913;
+      --card-bg: rgba(18, 22, 41, 0.75);
+      --border-color: rgba(0, 229, 255, 0.2);
+      --neon-cyan: #00e5ff;
+      --neon-purple: #9d4edd;
+      --neon-green: #00ff87;
+      --neon-red: #ff0055;
+      --text-main: #f0f4f8;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(157, 78, 221, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(0, 229, 255, 0.15) 0%, transparent 40%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--neon-red);
+      box-shadow: 0 0 8px var(--neon-red);
+    }
+
+    .dot.online {
+      background: var(--neon-green);
+      box-shadow: 0 0 8px var(--neon-green);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 360px 1fr;
       }
     }
-  </script>
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col md:flex-row relative overflow-x-hidden">
-  
-  <!-- Futuristic Background Glows -->
-  <div class="absolute top-0 left-1/4 w-96 h-96 bg-neonPurple/10 rounded-full blur-[120px] pointer-events-none"></div>
-  <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-neonCyan/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-  <!-- SIDEBAR NAVIGATION -->
-  <aside class="w-full md:w-72 bg-slate-900/80 backdrop-blur-xl border-b md:border-b-0 md:border-r border-slate-800/80 p-4 sm:p-5 flex flex-col justify-between shrink-0 z-10">
-    <div>
-      <!-- Brand Header -->
-      <div class="flex items-center justify-between mb-4 md:mb-6">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-slate-900 rounded-xl text-neonCyan border border-neonCyan/50 shadow-neon-cyan">
-            <i data-lucide="video" class="w-5 h-5"></i>
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      color: var(--neon-cyan);
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Token Statistics Panel */
+    .token-display {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .stat-box {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+    }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .timer-bar {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-reset {
+      background: transparent;
+      border: 1px solid var(--neon-purple);
+      color: var(--neon-purple);
+    }
+
+    .btn-reset:hover {
+      background: var(--neon-purple);
+      color: #fff;
+      box-shadow: 0 0 15px var(--neon-purple);
+    }
+
+    .btn-generate {
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+      color: #000;
+      font-weight: 800;
+      margin-top: 15px;
+    }
+
+    .btn-generate:hover {
+      opacity: 0.9;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+    }
+
+    /* API Provider Selector */
+    .provider-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .provider-chip {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      padding: 10px 8px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+
+    .provider-chip.active {
+      border-color: var(--neon-cyan);
+      background: rgba(0, 229, 255, 0.15);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+
+    .provider-chip .api-status {
+      font-size: 0.65rem;
+      display: block;
+      margin-top: 4px;
+      color: var(--text-muted);
+    }
+
+    /* Form Fields */
+    label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Video Display Stage */
+    .preview-stage {
+      width: 100%;
+      height: 380px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px dashed var(--border-color);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .loader {
+      display: none;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-left-color: var(--neon-cyan);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="logo">JOHNNY TEC // AI CLUSTER</div>
+    <div class="status-badge">
+      <div id="backend-dot" class="dot"></div>
+      <span id="backend-status-text">Checking Cluster...</span>
+    </div>
+  </header>
+
+  <div class="dashboard-grid">
+    
+    <!-- LEFT SIDEBAR: API Quota & Config -->
+    <div class="sidebar">
+      <!-- Token Tracker Card -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-title">
+          <span>TOKEN METRICS</span>
+          <span id="active-api-tag" style="font-size: 0.75rem; color: var(--neon-purple);">FAL.AI</span>
+        </div>
+
+        <div class="token-display">
+          <div class="stat-box">
+            <div id="tokens-remaining" class="stat-val">100</div>
+            <div class="stat-lbl">REMAINING</div>
+          </div>
+          <div class="stat-box">
+            <div id="tokens-total" class="stat-val">100</div>
+            <div class="stat-lbl">TOTAL ALLOCATED</div>
+          </div>
+        </div>
+
+        <div class="timer-bar">
+          <span>Quota Reset In:</span>
+          <span id="reset-timer" style="color: var(--neon-cyan);">23:59:59</span>
+        </div>
+
+        <button class="btn btn-reset" onclick="resetTokens()">Reset Token Allocation</button>
+      </div>
+
+      <!-- API Engine Selector Card -->
+      <div class="card">
+        <div class="card-title">ENGINE SWITCHER</div>
+        
+        <div class="provider-selector">
+          <div class="provider-chip active" onclick="selectProvider('fal', 100, this)">
+            FAL.AI
+            <span class="api-status" id="status-fal">Checking...</span>
+          </div>
+          <div class="provider-chip" onclick="selectProvider('google', 50, this)">
+            Google Veo
+            <span class="api-status" id="status-google">Checking...</span>
+          </div>
+          <div class="provider-chip" onclick="selectProvider('replicate', 80, this)">
+            Replicate
+            <span class="api-status" id="status-replicate">Checking...</span>
+          </div>
+          <div class="provider-chip" onclick="selectProvider('leonardo', 60, this)">
+            Leonardo
+            <span class="api-status" id="status-leonardo">Checking...</span>
+          </div>
+          <div class="provider-chip" onclick="selectProvider('kling', 40, this)">
+            Kling AI
+            <span class="api-status" id="status-kling">Checking...</span>
+          </div>
+        </div>
+
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">
+          * Switch engines to view individual token allowances and live backend connection states.
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT MAIN PANEL: Generation & Player -->
+    <div class="main-content">
+      <div class="card">
+        <div class="card-title">POST-PRODUCTION GENERATOR ENGINE</div>
+
+        <!-- Video Stage -->
+        <div class="preview-stage" id="stage">
+          <div class="loader" id="loader"></div>
+          <div id="stage-placeholder" style="color: var(--text-muted); font-size: 0.9rem;">
+            Generated output will render here
+          </div>
+          <video id="video-player" controls style="display: none;"></video>
+        </div>
+
+        <!-- Prompt Controls -->
+        <label for="prompt">Video Prompt Description</label>
+        <textarea id="prompt" placeholder="A futuristic cyberpunk city in the rain with glowing neon signs..."></textarea>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <label for="caption">Burn-In Subtitle / Caption</label>
+            <input type="text" id="caption" placeholder="Johnny Tec AI Generated">
           </div>
           <div>
-            <h1 class="text-sm font-bold text-white tracking-tight drop-shadow-md">Johnny Tec AI</h1>
-            <p class="text-[10px] text-neonPurple font-semibold uppercase tracking-widest">Video Studio</p>
+            <label for="logo">Watermark Logo URL (Optional)</label>
+            <input type="text" id="logo" placeholder="https://domain.com/logo.png">
           </div>
         </div>
 
-        <!-- Mobile Toggle Button -->
-        <button type="button" onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-white p-1.5 rounded-lg bg-slate-800/60 border border-slate-700">
-          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+        <button class="btn btn-generate" id="generate-btn" onclick="generateVideo()">
+          Generate & Post-Process MP4
         </button>
       </div>
-
-      <!-- Engine Selector List -->
-      <div id="sidebarContent" class="hidden md:block space-y-4">
-        
-        <!-- Token Economy Dashboard -->
-        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 mb-4 shadow-inner">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <i data-lucide="coins" class="w-3.5 h-3.5 text-neonMagenta"></i> API Tokens
-            </span>
-            <span id="tokenResetTimer" class="text-[9px] text-slate-500 font-mono">Reset: --:--:--</span>
-          </div>
-          <div class="flex items-end justify-between">
-            <div>
-              <div class="text-2xl font-bold text-white tracking-tighter" id="tokensRemaining">--</div>
-              <div class="text-[9px] text-slate-500">Available Balance</div>
-            </div>
-            <div class="text-right">
-              <div class="text-xs font-semibold text-rose-400" id="tokenCost">-0</div>
-              <div class="text-[9px] text-slate-500">Est. Cost/Video</div>
-            </div>
-          </div>
-          <!-- Progress Bar -->
-          <div class="w-full bg-slate-800 rounded-full h-1 mt-3 overflow-hidden">
-            <div id="tokenProgressBar" class="bg-gradient-to-r from-neonCyan to-neonPurple h-1 rounded-full transition-all duration-500" style="width: 100%"></div>
-          </div>
-        </div>
-
-        <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider px-1 flex items-center gap-1.5">
-          <i data-lucide="cpu" class="w-3.5 h-3.5 text-neonCyan"></i> Active API Engine
-        </div>
-
-        <div id="engineList" class="flex flex-col gap-2"></div>
-
-        <!-- Auto Fallback Switcher -->
-        <div class="pt-3 border-t border-slate-800/80">
-          <label class="flex items-center justify-between cursor-pointer p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-slate-700 transition">
-            <div class="flex items-center gap-2">
-              <i data-lucide="layers" class="w-4 h-4 text-neonPurple"></i>
-              <span class="text-xs text-slate-300 font-medium">Auto Fallback</span>
-            </div>
-            <input type="checkbox" id="autoFallback" checked class="rounded bg-slate-900 border-slate-800 text-neonCyan w-4 h-4 focus:ring-neonCyan/50" />
-          </label>
-        </div>
-      </div>
     </div>
-  </aside>
 
-  <!-- MAIN WORKSPACE -->
-  <main class="flex-1 p-4 sm:p-8 max-w-4xl mx-auto w-full z-10">
-    <header class="mb-6 flex items-center justify-between pb-4 border-b border-slate-800/80">
-      <div>
-        <h2 class="text-lg sm:text-xl font-bold tracking-tight text-white">Generate AI Video</h2>
-        <p class="text-xs text-slate-400 mt-1">
-          Engine: <span id="activeEngineBadge" class="text-neonCyan font-bold uppercase tracking-wider drop-shadow-[0_0_5px_rgba(0,243,255,0.8)]">FAL.AI</span>
-        </p>
-      </div>
-      
-      <!-- Dynamic Real-Time Status Badge -->
-      <div id="apiStatusBadge" class="flex items-center gap-1.5 text-[11px] text-slate-400 bg-slate-900/50 border border-slate-800 px-3 py-1.5 rounded-full transition-colors duration-300">
-        <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Checking Cluster...
-      </div>
-    </header>
+  </div>
+</div>
 
-    <!-- FORM WORKSPACE -->
-    <form id="videoForm" class="bg-slate-900/60 backdrop-blur-md border border-slate-800 p-4 sm:p-6 rounded-2xl flex flex-col gap-4 sm:gap-5 shadow-2xl relative overflow-hidden">
-      
-      <!-- Top Border Glow -->
-      <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-neonPurple to-transparent opacity-50"></div>
+<script>
+  // BACKEND URL (Will target Render when hosted)
+  const BACKEND_URL = "http://localhost:10000"; 
 
-      <!-- Aspect Ratio & Resolution -->
-      <div class="grid grid-cols-2 gap-3 sm:gap-4">
-        <div>
-          <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Aspect Ratio</label>
-          <select id="aspectRatio" class="w-full p-2.5 rounded-xl bg-slate-950/80 border border-slate-700/50 text-xs text-white focus:outline-none focus:border-neonCyan focus:ring-1 focus:ring-neonCyan/50 transition">
-            <option value="16:9">16:9 (Landscape)</option>
-            <option value="9:16">9:16 (Portrait / Reels)</option>
-            <option value="1:1">1:1 (Square)</option>
-          </select>
-        </div>
+  // TOKEN SYSTEM STATE ENGINE
+  const tokenState = {
+    fal: { total: 100, remaining: 100, cost: 10 },
+    google: { total: 50, remaining: 50, cost: 5 },
+    replicate: { total: 80, remaining: 80, cost: 8 },
+    leonardo: { total: 60, remaining: 60, cost: 6 },
+    kling: { total: 40, remaining: 40, cost: 10 }
+  };
 
-        <div>
-          <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Resolution</label>
-          <select id="resolution" class="w-full p-2.5 rounded-xl bg-slate-950/80 border border-slate-700/50 text-xs text-white focus:outline-none focus:border-neonCyan focus:ring-1 focus:ring-neonCyan/50 transition">
-            <option value="720p">720p (Fast)</option>
-            <option value="1080p">1080p (HD)</option>
-          </select>
-        </div>
-      </div>
+  let currentProvider = 'fal';
+  let resetCountdownSeconds = 86400; // 24 Hours
 
-      <!-- Source Image Upload -->
-      <div>
-        <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-          Source Photo <span class="text-slate-500 font-normal lowercase">(Optional for Image-to-Video)</span>
-        </label>
-        <input type="file" id="imageInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:uppercase file:tracking-wider file:bg-slate-800 file:text-neonCyan hover:file:bg-slate-700 hover:file:text-white transition cursor-pointer" />
-      </div>
+  // Initialize UI & Backend Health Monitoring
+  window.onload = () => {
+    updateTokenDisplay();
+    startResetTimer();
+    checkBackendHealth();
+  };
 
-      <!-- Prompt Input -->
-      <div>
-        <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Video Prompt</label>
-        <textarea id="prompt" rows="3" required placeholder="Describe motion (e.g. Cybernetic city under heavy rain, neon glow, 4k cinematic...)" class="w-full p-3.5 rounded-xl bg-slate-950/80 border border-slate-700/50 text-xs sm:text-sm text-white focus:outline-none focus:border-neonPurple focus:ring-1 focus:ring-neonPurple/50 resize-none transition shadow-inner"></textarea>
+  // 1. Backend Health Check & API Status Monitor
+  async function checkBackendHealth() {
+    const dot = document.getElementById('backend-dot');
+    const text = document.getElementById('backend-status-text');
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/`);
+      if (res.ok) {
+        dot.classList.add('online');
+        text.innerText = "Backend Active";
         
-        <!-- Quick Presets -->
-        <div class="mt-2.5 flex flex-wrap gap-2">
-          <button type="button" onclick="setPreset('Cinematic wide shot of a rainy neon cyber city, 4k resolution')" class="text-[10px] bg-slate-950 border border-slate-800 hover:border-neonCyan/50 hover:text-neonCyan text-slate-400 px-2.5 py-1.5 rounded-lg transition">Cyberpunk City</button>
-          <button type="button" onclick="setPreset('Slow motion camera zooming into an ancient magical forest portal')" class="text-[10px] bg-slate-950 border border-slate-800 hover:border-neonPurple/50 hover:text-neonPurple text-slate-400 px-2.5 py-1.5 rounded-lg transition">Magic Portal</button>
-          <button type="button" onclick="setPreset('Underwater view of bioluminescent alien reef with glowing fish')" class="text-[10px] bg-slate-950 border border-slate-800 hover:border-neonMagenta/50 hover:text-neonMagenta text-slate-400 px-2.5 py-1.5 rounded-lg transition">Underwater</button>
-        </div>
-      </div>
-
-      <!-- Submit Button -->
-      <button type="submit" id="submitBtn" class="w-full py-3.5 bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 hover:border-neonCyan hover:shadow-neon-cyan text-white font-bold tracking-wide text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all duration-300">
-        <i data-lucide="play" class="w-4 h-4 text-neonCyan fill-current"></i>
-        <span>INITIALIZE RENDER</span>
-      </button>
-    </form>
-
-    <!-- STATUS TEXT -->
-    <p id="status" class="text-center text-xs font-mono text-neonCyan mt-4 hidden animate-pulse"></p>
-
-    <!-- OUTPUT VIDEO CONTAINER -->
-    <div id="resultContainer" class="mt-6 bg-slate-900/80 backdrop-blur-md border border-slate-800 p-4 rounded-2xl hidden shadow-neon-purple flex flex-col gap-3 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-neonCyan via-neonPurple to-neonMagenta"></div>
-      <h3 class="text-xs font-bold text-white tracking-widest uppercase flex items-center gap-2">
-        <i data-lucide="check-circle" class="w-4 h-4 text-neonCyan"></i> Render Complete
-      </h3>
-      <video id="videoOutput" controls autoplay loop class="w-full rounded-xl bg-black border border-slate-800"></video>
-      <div class="flex items-center justify-between text-[11px] px-1 font-semibold uppercase tracking-wider">
-        <a id="directUrl" href="#" target="_blank" class="text-neonCyan hover:text-white transition flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> Direct Link</a>
-        <a id="downloadUrl" href="#" download class="text-neonPurple hover:text-white transition flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> Download MP4</a>
-      </div>
-    </div>
-  </main>
-
-  <script>
-    // 1. UPDATED BACKEND URL
-    const BASE_URL = "https://johnny-ai-video-backend.onrender.com";
-    const GENERATE_URL = `${BASE_URL}/api/generate-video`;
-    
-    // API Providers config (added cost estimation for token tracking)
-    const PROVIDERS = [
-      { id: "fal", name: "fal.ai", desc: "Hunyuan / Minimax", badge: "Fast", cost: 15 },
-      { id: "replicate", name: "Replicate", desc: "Stable Video Diff", badge: "Open Source", cost: 12 },
-      { id: "google", name: "Google Veo", desc: "High cinematic quality", badge: "Pro", cost: 25 },
-      { id: "leonardo", name: "Leonardo.ai", desc: "Motion & styles", badge: "Creative", cost: 20 },
-      { id: "json2video", name: "JSON2Video", desc: "Captions & templates", badge: "Utility", cost: 10 }
-    ];
-
-    let activeProvider = "fal";
-    let activeCost = 15;
-
-    // --- REAL-TIME API HEALTH CHECK ---
-    async function checkClusterHealth() {
-      const badge = document.getElementById('apiStatusBadge');
-      try {
-        const response = await fetch(BASE_URL);
-        if (response.ok) {
-          badge.className = "flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-green-400 bg-green-950/40 border border-green-800/50 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(74,222,128,0.2)]";
-          badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Cluster Online`;
-        } else {
-          throw new Error('Offline');
+        // Mark provider chips as ready
+        ['fal', 'google', 'replicate', 'leonardo', 'kling'].forEach(p => {
+          const el = document.getElementById(`status-${p}`);
+          if (el) {
+            el.innerText = "Online";
+            el.style.color = "var(--neon-green)";
+          }
+        });
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      dot.classList.remove('online');
+      text.innerText = "Cluster Disconnected";
+      ['fal', 'google', 'replicate', 'leonardo', 'kling'].forEach(p => {
+        const el = document.getElementById(`status-${p}`);
+        if (el) {
+          el.innerText = "Offline";
+          el.style.color = "var(--neon-red)";
         }
-      } catch (err) {
-        badge.className = "flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-red-400 bg-red-950/40 border border-red-800/50 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(248,113,113,0.2)]";
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Cluster Offline`;
-      }
-    }
-    
-    // Run health check on load and every 60 seconds
-    checkClusterHealth();
-    setInterval(checkClusterHealth, 60000);
-
-    // --- TOKEN SYSTEM (Client-Side Simulation) ---
-    const MAX_TOKENS = 500;
-    let currentTokens = parseInt(localStorage.getItem('johnny_tokens')) || MAX_TOKENS;
-    let nextResetTime = parseInt(localStorage.getItem('johnny_token_reset'));
-
-    // Initialize reset timer if it doesn't exist (24 hours from now)
-    if (!nextResetTime || Date.now() > nextResetTime) {
-      currentTokens = MAX_TOKENS;
-      nextResetTime = Date.now() + (24 * 60 * 60 * 1000);
-      localStorage.setItem('johnny_token_reset', nextResetTime);
-    }
-    
-    function updateTokenUI() {
-      localStorage.setItem('johnny_tokens', currentTokens);
-      document.getElementById('tokensRemaining').innerText = currentTokens;
-      document.getElementById('tokenCost').innerText = `-${activeCost}`;
-      
-      const percentage = Math.max(0, (currentTokens / MAX_TOKENS) * 100);
-      document.getElementById('tokenProgressBar').style.width = `${percentage}%`;
-      
-      if (currentTokens < activeCost) {
-        document.getElementById('tokensRemaining').classList.add('text-red-500');
-        document.getElementById('tokensRemaining').classList.remove('text-white');
-      }
-    }
-
-    function updateTimerUI() {
-      const now = Date.now();
-      const diff = nextResetTime - now;
-      if (diff <= 0) {
-        currentTokens = MAX_TOKENS;
-        nextResetTime = Date.now() + (24 * 60 * 60 * 1000);
-        localStorage.setItem('johnny_token_reset', nextResetTime);
-        updateTokenUI();
-      }
-      
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      
-      document.getElementById('tokenResetTimer').innerText = `Reset: ${hours.toString().padStart(2,'0')}h ${minutes.toString().padStart(2,'0')}m`;
-    }
-    
-    setInterval(updateTimerUI, 60000); // Update timer every minute
-    updateTimerUI();
-
-    // --- UI INTERACTIONS ---
-    function toggleMobileSidebar() {
-      const content = document.getElementById("sidebarContent");
-      content.classList.toggle("hidden");
-    }
-
-    const engineList = document.getElementById("engineList");
-
-    function renderEngines() {
-      engineList.innerHTML = PROVIDERS.map(p => `
-        <button type="button" onclick="selectEngine('${p.id}', ${p.cost})" class="w-full text-left p-2.5 sm:p-3 rounded-xl transition-all duration-300 flex flex-col gap-0.5 border ${activeProvider === p.id ? 'bg-slate-900 border-neonCyan shadow-[inset_0_0_15px_rgba(0,243,255,0.15)] text-white' : 'bg-slate-950/60 border-slate-800/80 text-slate-400 hover:border-slate-700'}">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold tracking-wide uppercase">${p.name}</span>
-            <span class="text-[9px] px-2 py-0.5 rounded-full font-mono ${activeProvider === p.id ? 'bg-neonCyan text-black font-bold' : 'bg-slate-800 text-slate-400'}">${p.badge}</span>
-          </div>
-          <p class="text-[10px] text-slate-500">${p.desc}</p>
-        </button>
-      `).join('');
-      document.getElementById("activeEngineBadge").innerText = activeProvider;
-      updateTokenUI();
-    }
-
-    function selectEngine(id, cost) {
-      activeProvider = id;
-      activeCost = cost;
-      renderEngines();
-    }
-
-    function setPreset(text) {
-      document.getElementById('prompt').value = text;
-    }
-
-    // Initialize UI
-    renderEngines();
-    lucide.createIcons();
-
-    // --- FORM SUBMISSION ---
-    const form = document.getElementById('videoForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const statusText = document.getElementById('status');
-    const resultContainer = document.getElementById('resultContainer');
-    const videoOutput = document.getElementById('videoOutput');
-
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
       });
     }
+  }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      if (currentTokens < activeCost) {
-        alert("Insufficient API tokens for this render engine! Please wait for the daily reset or select a cheaper engine.");
-        return;
+  // 2. Provider Selector Handler
+  function selectProvider(provider, total, element) {
+    currentProvider = provider;
+    
+    document.querySelectorAll('.provider-chip').forEach(c => c.classList.remove('active'));
+    element.classList.add('active');
+
+    document.getElementById('active-api-tag').innerText = provider.toUpperCase();
+    updateTokenDisplay();
+  }
+
+  // 3. Update Token Metrics
+  function updateTokenDisplay() {
+    const data = tokenState[currentProvider];
+    document.getElementById('tokens-remaining').innerText = data.remaining;
+    document.getElementById('tokens-total').innerText = data.total;
+  }
+
+  // 4. Reset Token Quota
+  function resetTokens() {
+    tokenState[currentProvider].remaining = tokenState[currentProvider].total;
+    updateTokenDisplay();
+    alert(`Tokens for ${currentProvider.toUpperCase()} have been successfully reset!`);
+  }
+
+  // 5. Quota Reset Countdown Timer
+  function startResetTimer() {
+    setInterval(() => {
+      if (resetCountdownSeconds > 0) resetCountdownSeconds--;
+      const hours = String(Math.floor(resetCountdownSeconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((resetCountdownSeconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(resetCountdownSeconds % 60).padStart(2, '0');
+      document.getElementById('reset-timer').innerText = `${hours}:${mins}:${secs}`;
+    }, 1000);
+  }
+
+  // 6. Execute Video Generation API Call
+  async function generateVideo() {
+    const prompt = document.getElementById('prompt').value;
+    const captionText = document.getElementById('caption').value;
+    const logoUrl = document.getElementById('logo').value;
+    const providerData = tokenState[currentProvider];
+
+    if (!prompt) {
+      alert("Please enter a video prompt description.");
+      return;
+    }
+
+    if (providerData.remaining < providerData.cost) {
+      alert(`Insufficient tokens! This engine requires ${providerData.cost} tokens, but you only have ${providerData.remaining} left.`);
+      return;
+    }
+
+    // Deduct Tokens
+    providerData.remaining -= providerData.cost;
+    updateTokenDisplay();
+
+    // UI Loading State
+    document.getElementById('stage-placeholder').style.display = 'none';
+    document.getElementById('video-player').style.display = 'none';
+    document.getElementById('loader').style.display = 'block';
+    document.getElementById('generate-btn').disabled = true;
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/generate-video`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: prompt,
+          provider: currentProvider,
+          autoFallback: true,
+          captionText: captionText,
+          logoUrl: logoUrl
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.finalVideoUrl) {
+        const videoPlayer = document.getElementById('video-player');
+        videoPlayer.src = result.finalVideoUrl;
+        videoPlayer.style.display = 'block';
+        videoPlayer.play();
+      } else {
+        alert(`Generation Error: ${result.error || 'Failed to render video.'}`);
+        document.getElementById('stage-placeholder').style.display = 'block';
       }
+    } catch (err) {
+      alert("Error connecting to cluster server.");
+      document.getElementById('stage-placeholder').style.display = 'block';
+    } finally {
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('generate-btn').disabled = false;
+    }
+  }
+</script>
 
-      const prompt = document.getElementById('prompt').value;
-      const aspectRatio = document.getElementById('aspectRatio').value;
-      const resolution = document.getElementById('resolution').value;
-      const imageFile = document.getElementById('imageInput').files[0];
-      const autoFallback = document.getElementById('autoFallback').checked;
-
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 text-neonCyan animate-spin"></i><span>TRANSMITTING DATA...</span>';
-      submitBtn.className = "w-full py-3.5 bg-slate-900 border border-neonCyan shadow-neon-cyan text-white font-bold tracking-wide text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all duration-300";
-      
-      statusText.classList.remove('hidden');
-      statusText.innerText = `> Establishing secure uplink to ${activeProvider.toUpperCase()} API cluster...`;
-      resultContainer.classList.add('hidden');
-      lucide.createIcons();
-
-      try {
-        let imageUrl = null;
-        if (imageFile) {
-          imageUrl = await fileToBase64(imageFile);
-        }
-
-        const res = await fetch(GENERATE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, provider: activeProvider, autoFallback, imageUrl, aspectRatio, resolution })
-        });
-
-        const data = await res.json();
-        if (!res.ok || !data.success) throw new Error(data.error || "Generation failed.");
-
-        // Deduct Tokens on Success
-        currentTokens -= activeCost;
-        updateTokenUI();
-
-        videoOutput.src = data.videoUrl;
-        document.getElementById('directUrl').href = data.videoUrl;
-        document.getElementById('downloadUrl').href = data.videoUrl;
-        resultContainer.classList.remove('hidden');
-        
-        resultContainer.scrollIntoView({ behavior: 'smooth' });
-      } catch (err) {
-        alert("Error: " + err.message);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4 text-neonCyan fill-current"></i><span>INITIALIZE RENDER</span>';
-        submitBtn.className = "w-full py-3.5 bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 hover:border-neonCyan hover:shadow-neon-cyan text-white font-bold tracking-wide text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all duration-300";
-        statusText.classList.add('hidden');
-        lucide.createIcons();
-      }
-    });
-  </script>
 </body>
 </html>
+          
