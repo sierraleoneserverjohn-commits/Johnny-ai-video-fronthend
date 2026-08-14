@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#070a12">
+<title>Johnny Tec AI — Video Studio</title>
+<style>
+:root{
+  --bg:#060811;--panel:#0c101b;--panel2:#101625;--line:#20283a;
+  --text:#f5f7fb;--muted:#8d98ad;--accent:#7c5cff;--cyan:#35d9ff;
+  --green:#35e69a;--red:#ff5f70;--yellow:#ffd166;--shadow:0 20px 70px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 25% 0%,#151333 0,#060811 42%,#04060b 100%);
+color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:280px minmax(0,1fr) 330px;min-height:100vh}
+.sidebar,.rightbar{background:rgba(9,12,21,.88);backdrop-filter:blur(18px);border-color:var(--line)}
+.sidebar{border-right:1px solid var(--line);padding:20px;display:flex;flex-direction:column}
+.rightbar{border-left:1px solid var(--line);padding:18px;overflow:auto}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--cyan));display:grid;place-items:center;font-weight:900;box-shadow:0 0 30px #6354ff55}
+.brand b{font-size:15px}.brand span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#aeb7c9;text-align:left;padding:12px;border-radius:12px}
+.nav button.active,.nav button:hover{background:#151a2a;color:white}
+.side-bottom{margin-top:auto}.mini{border:1px solid var(--line);border-radius:15px;padding:13px;background:#0b0f19}
+.mini small{color:var(--muted)}.mini strong{display:block;margin-top:4px}
+.main{padding:28px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+h1{font-size:28px;margin:0}.subtitle{color:var(--muted);margin-top:7px;font-size:13px}
+.pill{border:1px solid #283148;background:#101727;border-radius:999px;padding:9px 12px;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;background:var(--green);box-shadow:0 0 12px currentColor}
+.card{background:linear-gradient(180deg,#0d1220,#090d17);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.creator{padding:20px}.label{font-size:12px;color:#aeb7c9;margin-bottom:9px}
+textarea{width:100%;min-height:150px;resize:vertical;background:#070a12;color:white;border:1px solid #252e43;border-radius:15px;padding:15px;outline:none}
+textarea:focus,input:focus,select:focus{border-color:#6658e9;box-shadow:0 0 0 3px #6658e91c}
+.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+select,input{width:100%;background:#080c15;color:#eef1f7;border:1px solid #252e43;border-radius:11px;padding:11px;outline:none}
+.generate{width:100%;margin-top:13px;border:0;border-radius:13px;padding:13px;background:linear-gradient(90deg,#684dff,#19bfe8);color:#fff;font-weight:800;box-shadow:0 10px 35px #5c50ff2b}
+.generate:disabled{opacity:.55;cursor:not-allowed}
+.preview{margin-top:18px;padding:16px}.preview-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+video{width:100%;max-height:520px;background:#030509;border-radius:15px;display:block}
+.empty{height:330px;border:1px dashed #283149;border-radius:15px;display:grid;place-items:center;color:var(--muted);text-align:center}
+.status{margin-top:12px;padding:11px;border-radius:12px;background:#090e18;color:#aeb7c9;font-size:12px}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px;font-weight:800}
+.refresh{border:1px solid var(--line);background:#111727;color:#cbd2df;border-radius:9px;padding:6px 9px;font-size:11px}
+.provider{border:1px solid var(--line);background:#0b101b;border-radius:15px;padding:13px;margin-bottom:10px}
+.p-top{display:flex;justify-content:space-between;gap:10px}.p-name{font-weight:750;font-size:13px}
+.state{font-size:10px;border-radius:999px;padding:4px 7px}.on{color:var(--green);background:#35e69a14}.off{color:var(--red);background:#ff5f7014}.unknown{color:var(--yellow);background:#ffd16614}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.metric{background:#080c14;border-radius:10px;padding:8px}.metric small{display:block;color:var(--muted);font-size:9px}.metric b{font-size:12px;display:block;margin-top:3px}
+.bar{height:5px;background:#20283a;border-radius:10px;margin-top:9px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:10px}
+.editor{margin-top:18px}.toggle{display:flex;align-items:center;gap:9px;color:#cbd2df;font-size:12px;margin:10px 0}.toggle input{width:auto}
+.render{margin-top:12px;border:1px solid #283149;background:#101727;color:white;border-radius:11px;padding:10px;width:100%}
+.notice{font-size:10px;line-height:1.5;color:#778298;margin-top:12px}
+.api-base{font-size:10px;color:#667187;word-break:break-all;margin-top:7px}
+@media(max-width:1050px){.app{grid-template-columns:76px minmax(0,1fr)}.sidebar{padding:14px}.brand div:last-child,.nav button span,.side-bottom{display:none}.rightbar{grid-column:1/-1;border-left:0;border-top:1px solid var(--line);max-height:none}.nav button{text-align:center}.brand{justify-content:center}}
+@media(max-width:700px){.app{display:block}.sidebar{display:none}.main{padding:16px}.rightbar{padding:16px}.controls{grid-template-columns:1fr}.top{align-items:flex-start}.top .pill{display:none}h1{font-size:23px}.empty{height:240px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">JT</div>
+      <div><b>Johnny Tec AI</b><span>Video Studio</span></div>
+    </div>
+    <nav class="nav">
+      <button class="active">🎬 <span>Video Generator</span></button>
+      <button>🖼️ <span>Image Generator</span></button>
+      <button>📁 <span>Projects</span></button>
+      <button>⚙️ <span>Settings</span></button>
+    </nav>
+    <div class="side-bottom"><div class="mini"><small>Backend</small><strong><span class="dot"></span>Connected</strong></div></div>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div><h1>AI Video Studio</h1><div class="subtitle">Generate with multiple providers, then finish the video with JSON2Video.</div></div>
+      <div class="pill"><span class="dot"></span>Live monitor</div>
+    </div>
+
+    <section class="card creator">
+      <div class="label">VIDEO PROMPT</div>
+      <textarea id="prompt" placeholder="Describe the video you want... e.g. A cinematic futuristic city in Freetown at sunset, realistic camera movement"></textarea>
+      <div class="controls">
+        <div><div class="label">Provider</div>
+          <select id="provider">
+            <option value="fal">FAL.AI — Main</option>
+            <option value="veo">Google Veo — Pro</option>
+            <option value="replicate">Replicate — Open models</option>
+            <option value="leonardo">Leonardo — Creative</option>
+            <option value="kling">Kling/Luma — Budget</option>
+          </select>
+        </div>
+        <div><div class="label">Duration</div><select id="duration"><option>5</option><option selected>8</option><option>10</option><option>15</option></select></div>
+        <div><div class="label">Aspect ratio</div><select id="ratio"><option value="9:16">9:16</option><option value="16:9">16:9</option><option value="1:1">1:1</option></select></div>
+      </div>
+      <button class="generate" id="generate">Generate video</button>
+      <div class="status" id="status">Ready. API keys remain on your backend.</div>
+    </section>
+
+    <section class="card preview">
+      <div class="preview-head"><b>Generated Video</b><span class="pill" id="job">No job</span></div>
+      <div id="previewBox" class="empty">Your final JSON2Video render will appear here.</div>
+    </section>
+  </main>
+
+  <aside class="rightbar">
+    <div class="section-title">API Monitor <button class="refresh" id="refresh">Refresh</button></div>
+    <div id="providers"></div>
+
+    <section class="card editor" style="padding:14px">
+      <div class="section-title">🎬 JSON2Video</div>
+      <div class="label">Final render options</div>
+      <label class="toggle"><input type="checkbox" id="captions" checked> Add captions</label>
+      <label class="toggle"><input type="checkbox" id="logo" checked> Add Johnny Tec logo</label>
+      <label class="toggle"><input type="checkbox" id="voice"> Add voiceover</label>
+      <label class="toggle"><input type="checkbox" id="music"> Add background music</label>
+      <button class="render" id="render">Render final video</button>
+      <div class="notice">JSON2Video is the final composition layer. This frontend only sends settings to your backend; never place provider API keys in this file.</div>
+    </section>
+
+    <div class="api-base">Backend: https://johnny-ai-video-backend.onrender.com</div>
+  </aside>
+</div>
+
+<script>
+const BACKEND = "https://johnny-ai-video-backend.onrender.com";
+const $ = id => document.getElementById(id);
+
+const fallbackProviders = [
+  {id:"fal",name:"FAL.AI",status:"unknown",balance:null,cost:null},
+  {id:"veo",name:"Google Veo",status:"unknown",balance:null,cost:null},
+  {id:"replicate",name:"Replicate",status:"unknown",balance:null,cost:null},
+  {id:"leonardo",name:"Leonardo AI",status:"unknown",balance:null,cost:null},
+  {id:"kling",name:"Kling / Luma",status:"unknown",balance:null,cost:null},
+  {id:"json2video",name:"JSON2Video",status:"unknown",balance:null,cost:null}
+];
+
+function money(v){return v == null ? "Unavailable" : "$"+Number(v).toFixed(2)}
+function renderProviders(list){
+  $("providers").innerHTML = list.map(p=>{
+    const state = p.status === "active" || p.status === "online" ? "on" : p.status === "offline" ? "off" : "unknown";
+    const label = state==="on"?"ACTIVE":state==="off"?"OFFLINE":"UNKNOWN";
+    const balance = p.balance == null ? "Unavailable" : (typeof p.balance==="number" ? p.balance.toLocaleString() : p.balance);
+    const used = p.used ?? "—";
+    const pct = Number(p.percent_used ?? 0);
+    return `<div class="provider">
+      <div class="p-top"><div class="p-name">${p.name}</div><div class="state ${state}">● ${label}</div></div>
+      <div class="metrics">
+        <div class="metric"><small>REMAINING</small><b>${balance}</b></div>
+        <div class="metric"><small>VIDEO COST</small><b>${p.cost == null ? "Unavailable" : (typeof p.cost==="number" ? money(p.cost) : p.cost)}</b></div>
+        <div class="metric"><small>USED</small><b>${used}</b></div>
+        <div class="metric"><small>LAST CHECK</small><b>${p.last_check ? new Date(p.last_check).toLocaleTimeString() : "—"}</b></div>
+      </div>
+      <div class="bar"><i style="width:${Math.max(0,Math.min(100,pct))}%"></i></div>
+    </div>`;
+  }).join("");
+}
+
+async function loadStatus(){
+  try{
+    // Recommended backend endpoint. If your backend uses a different route,
+    // change only this URL.
+    const r = await fetch(BACKEND + "/api/providers/status", {cache:"no-store"});
+    if(!r.ok) throw new Error("status "+r.status);
+    const data = await r.json();
+    const list = Array.isArray(data) ? data : (data.providers || []);
+    renderProviders(list.length ? list : fallbackProviders);
+  }catch(e){
+    renderProviders(fallbackProviders);
+    $("status").textContent = "Live balance endpoint unavailable. Showing UNKNOWN instead of fake balances.";
+  }
+}
+
+async function generate(){
+  const prompt = $("prompt").value.trim();
+  if(!prompt){$("status").textContent="Enter a video prompt first."; return;}
+  $("generate").disabled=true; $("status").textContent="Sending generation request...";
+  $("job").textContent="Starting";
+  try{
+    const r = await fetch(BACKEND + "/api/video/generate", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        prompt,
+        provider:$("provider").value,
+        duration:Number($("duration").value),
+        aspect_ratio:$("ratio").value,
+        json2video:{
+          captions:$("captions").checked,
+          logo:$("logo").checked,
+          voice:$("voice").checked,
+          music:$("music").checked
+        }
+      })
+    });
+    if(!r.ok) throw new Error("Generation endpoint returned "+r.status);
+    const data = await r.json();
+    const url = data.final_video_url || data.video_url || data.url;
+    if(url){
+      $("previewBox").innerHTML=`<video controls playsinline src="${url}"></video>`;
+      $("job").textContent="Complete"; $("status").textContent="Final video ready.";
+    }else{
+      $("job").textContent=data.job_id || data.id || "Queued";
+      $("status").textContent=data.message || "Generation started. Poll your backend job endpoint.";
+    }
+    loadStatus();
+  }catch(e){
+    $("job").textContent="Error";
+    $("status").textContent="Backend generation endpoint not available yet: "+e.message;
+  }finally{$("generate").disabled=false;}
+}
+
+async function renderFinal(){
+  $("status").textContent="Sending JSON2Video render settings...";
+  try{
+    const r=await fetch(BACKEND+"/api/video/render",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        captions:$("captions").checked,logo:$("logo").checked,
+        voice:$("voice").checked,music:$("music").checked
+      })
+    });
+    if(!r.ok) throw new Error("render endpoint returned "+r.status);
+    const d=await r.json();
+    const url=d.final_video_url||d.video_url||d.url;
+    if(url){$("previewBox").innerHTML=`<video controls playsinline src="${url}"></video>`;$("job").textContent="Final";$("status").textContent="JSON2Video render complete."}
+    else $("status").textContent=d.message||"JSON2Video render queued.";
+  }catch(e){$("status").textContent="JSON2Video render endpoint not available: "+e.message}
+}
+
+$("generate").addEventListener("click",generate);
+$("render").addEventListener("click",renderFinal);
+$("refresh").addEventListener("click",loadStatus);
+renderProviders(fallbackProviders);
+loadStatus();
+setInterval(loadStatus,10000);
+</script>
+</body>
+</html>
